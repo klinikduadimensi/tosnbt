@@ -39,6 +39,8 @@ body.dark-mode .tab-switch-warning { background: #450a0a; color: #fca5a5; border
 body.dark-mode .m-timer { background: #1e293b; color: #fbbf24; border-color: #334155; }
 body.dark-mode .m-violation { background: #450a0a; color: #fca5a5; border-color: #7f1d1d; }
 body.dark-mode .form-control { background: #0f172a; color: #f1f5f9; border-color: var(--border); }
+body.dark-mode .table-bs th { background: var(--primary-dark); border-color: var(--border); }
+body.dark-mode .row-bs:hover { background-color: #334155; }
 
 /* --- FONT SIZE MODES --- */
 body.font-small { font-size: 14px; }
@@ -95,6 +97,7 @@ body { font-family: 'Inter', 'Segoe UI', Roboto, sans-serif; background: var(--b
 .teks-soal { line-height: 1.7; margin-bottom: 25px; color: var(--text); } 
 .teks-soal img { max-width: 100%; border-radius: 8px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); margin-top: 10px;}
 
+/* --- Opsi Jawaban (PG & MCMA) --- */
 .opsi-group { display: flex; flex-direction: column; gap: 12px; } 
 .opsi-item { display: flex; align-items: flex-start; padding: 14px 18px; border: 2px solid var(--border); border-radius: 10px; cursor: pointer; transition: all 0.2s ease; background: var(--card); } 
 .opsi-item:hover { background: var(--bg); border-color: #cbd5e1; } 
@@ -102,6 +105,7 @@ body { font-family: 'Inter', 'Segoe UI', Roboto, sans-serif; background: var(--b
 .opsi-item input { margin-right: 15px; margin-top: 4px; transform: scale(1.3); accent-color: var(--primary); cursor: pointer; }
 .opsi-content { flex: 1; overflow-x: auto; line-height: 1.5; }
 .opsi-content img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 10px 0; }
+
 /* --- CSS Khusus Tabel Benar-Salah --- */
 .table-bs-container { overflow-x: auto; border-radius: 8px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 10px; }
 .table-bs { width: 100%; border-collapse: collapse; background: var(--card); }
@@ -112,10 +116,7 @@ body { font-family: 'Inter', 'Segoe UI', Roboto, sans-serif; background: var(--b
 .radio-bs { transform: scale(1.4); cursor: pointer; accent-color: var(--primary); }
 .row-bs:hover { background-color: var(--bg); transition: 0.2s; }
 
-/* Penyesuaian Dark Mode untuk Tabel B-S */
-body.dark-mode .table-bs th { background: var(--primary-dark); border-color: var(--border); }
-body.dark-mode .row-bs:hover { background-color: #334155; }
-
+/* --- Nav Grid --- */
 .nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; } 
 .nav-btn { aspect-ratio: 1; border: 2px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 600; font-size: 0.95rem; color: var(--secondary); background: var(--card); transition: 0.2s; } 
 .nav-btn:hover { border-color: var(--secondary); color: var(--text); }
@@ -135,8 +136,6 @@ body.dark-mode .row-bs:hover { background-color: #334155; }
 .modal-content { background: var(--card); width: 90%; max-width: 380px; padding: 25px; border-radius: 1.2rem; max-height: 85vh; overflow-y: auto; position: relative; box-shadow: var(--shadow-lg); transition: 0.3s;} 
 .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; cursor: pointer; color: var(--secondary); transition: 0.2s; }
 
-.score-row { display: flex; justify-content: space-between; padding: 0.8rem 0; border-bottom: 1px solid var(--border); text-align: left; color: var(--text);}
-
 @media(max-width: 768px) { 
     .main-area { flex-direction: column; padding: 12px; gap: 15px; } 
     .nav-panel { display: none; } 
@@ -148,7 +147,7 @@ body.dark-mode .row-bs:hover { background-color: #334155; }
     .soal-panel { width: 100%; margin-bottom: 10px; box-sizing: border-box; padding: 20px 15px; } 
     .footer-controls { flex-direction: row; flex-wrap: wrap; gap: 10px; }
     .btn-nav { flex: 1; min-width: 120px; text-align: center; }
-    .user-info { display: none; } /* Hide on mobile to save space */
+    .user-info { display: none; }
 }
 @media(min-width: 769px) { .mobile-header-panel { display: none; } }
     </style>
@@ -181,7 +180,7 @@ body.dark-mode .row-bs:hover { background-color: #334155; }
                 
                 <input type="hidden" id="wa">
                 
-                <button type="submit" class="btn-block" id="btnLogin">MULAI UJIAN</button>
+                <button type="submit" class="btn-block" id="btnLogin">MULAI UJIAN <i class="fas fa-arrow-right"></i></button>
             </form>
         </div>
     </div>
@@ -201,7 +200,6 @@ body.dark-mode .row-bs:hover { background-color: #334155; }
         </div>
         
         <div class="main-area">
-            <!-- Mobile Header Panel -->
             <div class="mobile-header-panel">
                 <div class="mobile-top-row">
                     <div id="timerMobile" class="m-timer"><i class="fas fa-clock"></i> 60:00</div>
@@ -256,13 +254,14 @@ body.dark-mode .row-bs:hover { background-color: #334155; }
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-// GANTI DENGAN URL CODE.GS TKA SMP ANDA
+// PASTIKAN URL DEPLOY CODE.GS SNBT ANDA YANG BARU DIMASUKKAN DI SINI
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz5nk1UvdBotR7WDsmWqHpioKOTxuVPddgneKjGTreUp4lhHLCk46QFu4KMFvCyUsn2/exec'; 
 
 let questions = []; let dataPesertaServer = []; let answers = {}; let biodata = {};
 let currentIndex = 0; let timeRem = 3600; let timerInt; let isExamActive = false; let tabSwitchCount = 0;
+let isSubmitting = false; // Gembok pelindung klik-ganda
 
-// --- FITUR TEMA & FONT DARI REFERENSI UI ---
+// --- FITUR TEMA & FONT ---
 let currentFontState = 1; const fontClasses = ['font-small', 'font-medium', 'font-large'];
 
 function changeFontSize() {
@@ -292,10 +291,9 @@ function loadPreferences() {
     }
 }
 
-// --- FUNGSI PARSER GAMBAR KRUSIAL ---
+// --- FUNGSI PARSER GAMBAR ---
 function parseImgTags(html) {
     if (!html) return '';
-    // Mengubah ID Drive menjadi link gambar langsung agar terbaca sempurna
     return String(html).replace(/<img\s+id=([a-zA-Z0-9_-]+)>/g, (match, id) => {
         return `<img src="https://drive.google.com/thumbnail?id=${id}&sz=w800">`;
     });
@@ -322,7 +320,7 @@ window.onload = async () => {
         
         Swal.close();
     } catch (err) {
-        Swal.fire('Error', 'Gagal memuat data dari server.', 'error');
+        Swal.fire('Error', 'Gagal memuat data dari server. Pastikan SCRIPT_URL sudah benar.', 'error');
     }
 };
 
@@ -376,17 +374,18 @@ document.getElementById('biodata-form').addEventListener('submit', (e) => {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('infoNama').innerText = biodata.nama;
     
-    if (localStorage.getItem('jawaban_cbt_tka')) answers = JSON.parse(localStorage.getItem('jawaban_cbt_tka'));
+    if (localStorage.getItem('jawaban_cbt_snbt')) answers = JSON.parse(localStorage.getItem('jawaban_cbt_snbt'));
     
     document.getElementById('ujianScreen').style.display = 'flex';
     isExamActive = true; 
+    isSubmitting = false; // Pastikan gembok terbuka saat ujian dimulai
     
     requestFullScreen();
     buildNavGrid(); showQuestion(0);
     
     // Sistem Peringatan Pelanggaran Pindah Tab
     document.addEventListener("visibilitychange", () => {
-        if (document.hidden && isExamActive) {
+        if (document.hidden && isExamActive && !isSubmitting) {
             tabSwitchCount++;
             document.getElementById('tabWarning').innerText = `Pelanggaran: ${tabSwitchCount}/3`;
             document.getElementById('violationMobile').innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${tabSwitchCount}/3`;
@@ -401,7 +400,12 @@ document.getElementById('biodata-form').addEventListener('submit', (e) => {
         let s = (timeRem % 60).toString().padStart(2, '0');
         document.getElementById('timerDesktop').innerText = `${m}:${s}`;
         document.getElementById('timerMobile').innerHTML = `<i class="fas fa-clock"></i> ${m}:${s}`;
-        if(timeRem <= 0) { clearInterval(timerInt); Swal.fire('Waktu Habis!', 'Jawaban dikirim otomatis.', 'warning').then(() => submitQuiz(true)); }
+        if(timeRem <= 0) { 
+            clearInterval(timerInt); 
+            if (!isSubmitting) {
+                Swal.fire('Waktu Habis!', 'Jawaban dikirim otomatis.', 'warning').then(() => submitQuiz(true)); 
+            }
+        }
     }, 1000);
 });
 
@@ -409,7 +413,6 @@ document.getElementById('biodata-form').addEventListener('submit', (e) => {
 function showQuestion(idx) {
     currentIndex = idx; const q = questions[idx]; const div = document.getElementById('soalContainer');
     
-    // Fallback jika q.subtes tidak dikirim backend, gunakan q.category
     document.getElementById('infoSubtes').innerText = `📚 ${q.subtes || q.category || "CBT"}`;
     const tipeSoal = q.tipe ? q.tipe.toUpperCase() : 'PG';
 
@@ -483,7 +486,7 @@ function showQuestion(idx) {
 function saveAnswer(id, key) { answers[id] = key; persist(); }
 function saveMcma(id, k) { let a = answers[id] || []; if(a.includes(k)) a=a.filter(x=>x!==k); else a.push(k); answers[id] = a; persist(); }
 function saveBs(id, k, v) { let o = answers[id] || {}; o[k] = v; answers[id] = o; persist(); showQuestion(currentIndex); }
-function persist() { localStorage.setItem('jawaban_cbt_tka', JSON.stringify(answers)); buildNavGrid(); }
+function persist() { localStorage.setItem('jawaban_cbt_snbt', JSON.stringify(answers)); buildNavGrid(); }
 function changeQ(s) { let n = currentIndex + s; if(n >= 0 && n < questions.length) showQuestion(n); }
 
 // --- NAVIGASI GRID ---
@@ -511,41 +514,59 @@ function buildNavGrid() {
     });
 }
 
-// --- PENGIRIMAN DATA (SINKRON DENGAN TKA SMP) ---
+// --- PENGIRIMAN DATA (ANTI KLIK GANDA) ---
 function confirmFinish(forced = false) {
+    if (isSubmitting) return; // Mencegah klik saat animasi berjalan
     if (forced) { submitQuiz(true); return; }
-    Swal.fire({ title: 'Kirim Jawaban', text: 'Pastikan semua soal terjawab. Akhiri ujian?', icon: 'question', showCancelButton: true, confirmButtonText: 'Ya, Kirim', cancelButtonText: 'Batal', confirmButtonColor: '#10b981' })
-    .then((result) => { if (result.isConfirmed) submitQuiz(); });
+    
+    Swal.fire({ 
+        title: 'Kirim Jawaban', 
+        text: 'Pastikan semua soal terjawab. Akhiri ujian?', 
+        icon: 'question', 
+        showCancelButton: true, 
+        confirmButtonText: 'Ya, Kirim', 
+        cancelButtonText: 'Batal', 
+        confirmButtonColor: '#10b981' 
+    }).then((result) => { 
+        if (result.isConfirmed) submitQuiz(); 
+    });
 }
 
 async function submitQuiz(forced = false) {
+    if (isSubmitting) return; // Kunci gembok
+    isSubmitting = true; 
+    
     clearInterval(timerInt);
     Swal.fire({ title: 'Mengirim...', text: 'Menyimpan jawaban (Mohon tunggu)', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
     const payload = { token: "CBT_DUA_DIMENSI_2026", biodata, answers };
     
-    setTimeout(async () => {
-        try {
-            const response = await fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
-            const result = await response.json();
+    try {
+        const response = await fetch(SCRIPT_URL, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+            body: JSON.stringify(payload) 
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            localStorage.removeItem('jawaban_cbt_snbt'); 
+            isExamActive = false; 
+            Swal.close();
             
-            if (result.status === 'success') {
-                localStorage.removeItem('jawaban_cbt_tka'); isExamActive = false; Swal.close();
-                
-                // MENGEMBALIKAN FITUR SKOR DARI SCRIPT ASLI
-                document.getElementById('ujianScreen').style.display = 'none';
-                document.getElementById('resultScreen').style.display = 'flex';
-                document.getElementById('res-total').innerText = result.total || 0;
-                document.getElementById('res-rerata').innerText = result.rerata || 0;
-                document.getElementById('res-bi').innerText = result.scoreBI || 0;
-                document.getElementById('res-mtk').innerText = result.scoreMTK || 0;
-                document.getElementById('res-bing').innerText = result.scoreBING || 0;
-                document.getElementById('res-ipa').innerText = result.scoreIPA || 0;
-                
-                if (document.fullscreenElement) document.exitFullscreen().catch(e=>console.log(e));
-            } else { Swal.fire('Gagal!', result.message, 'error'); }
-        } catch (err) { Swal.fire('Koneksi Terputus', 'Klik Kirim Jawaban sekali lagi.', 'error'); }
-    }, 2000);
+            document.getElementById('ujianScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'flex';
+            
+            if (document.fullscreenElement) document.exitFullscreen().catch(e=>console.log(e));
+        } else { 
+            isSubmitting = false; // Buka gembok jika server menolak
+            Swal.fire('Gagal!', result.message, 'error'); 
+        }
+    } catch (err) { 
+        isSubmitting = false; // Buka gembok jika jaringan putus
+        Swal.fire('Koneksi Terputus', 'Sistem gagal menjangkau server. Silakan klik Kirim Jawaban sekali lagi.', 'error'); 
+    }
 }
 
 window.addEventListener('beforeunload', function (e) { if (isExamActive) { e.preventDefault(); e.returnValue = ''; } });
