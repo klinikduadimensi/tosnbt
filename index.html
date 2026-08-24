@@ -239,31 +239,18 @@ body.dark-mode .row-bs:hover { background-color: #334155; }
         </div>
     </div>
 
-    <!-- Result Screen -->
+    <!-- Result Screen (Versi IRT) -->
     <div id="resultScreen" style="display:none;">
-        <div class="login-box" style="text-align: center; max-width: 500px;">
-            <h2>Ujian Selesai!</h2>
-            <p style="color: var(--secondary); margin-top: 0.5rem; margin-bottom: 2rem;">Berikut adalah perolehan nilai Anda:</p>
-            
-            <div style="display: flex; justify-content: center; gap: 3rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px dashed var(--border);">
-                <div>
-                    <p style="font-size: 0.9rem; color: var(--secondary); font-weight: bold;">TOTAL SKOR</p>
-                    <h1 style="font-size: 3rem; color: var(--primary); margin: 0;" id="res-total">0</h1>
-                </div>
-                <div>
-                    <p style="font-size: 0.9rem; color: var(--secondary); font-weight: bold;">RATA-RATA</p>
-                    <h1 style="font-size: 3rem; color: #ff9800; margin: 0;" id="res-rerata">0</h1>
-                </div>
-            </div>
-            
-            <div style="margin-bottom: 2rem;">
-                <div class="score-row"><span>Bahasa Indonesia</span><strong id="res-bi">0</strong></div>
-                <div class="score-row"><span>Matematika</span><strong id="res-mtk">0</strong></div>
-                <div class="score-row"><span>Bahasa Inggris</span><strong id="res-bing">0</strong></div>
-                <div class="score-row"><span>IPA</span><strong id="res-ipa">0</strong></div>
-            </div>
-            
-            <button onclick="location.reload()" class="btn-block">Kembali ke Awal</button>
+        <div class="login-box" style="text-align: center; max-width: 400px;">
+            <div style="font-size:4rem; color:var(--success); margin-bottom:10px;"><i class="fas fa-check-circle"></i></div>
+            <h2 style="color:var(--text); margin:0;">Ujian Selesai!</h2>
+            <p style="color: var(--secondary); margin-top: 1rem; margin-bottom: 2rem; line-height: 1.6;">
+                Data jawaban Anda telah berhasil direkam oleh sistem.<br><br>
+                <span style="font-size: 0.85rem; background: #e7f1ff; color: var(--primary); padding: 8px 12px; border-radius: 8px; font-weight: bold;">
+                    Penilaian menggunakan sistem IRT akan diproses lebih lanjut oleh panitia.
+                </span>
+            </p>
+            <button onclick="location.reload()" class="btn-block">Selesai & Kembali ke Awal</button>
         </div>
     </div>
 
