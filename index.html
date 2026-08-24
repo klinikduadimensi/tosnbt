@@ -1,181 +1,225 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>CBT SNBT DUA DIMENSI</title>
-    <link rel="icon" href="https://ucarecdn.com/e9a7657b-e51e-4c43-a0bb-ee085ad4ca22/favicon.ico" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="https://ucarecdn.com/e9a7657b-e51e-4c43-a0bb-ee085ad4ca22/favicon.ico">
     
     <style>
-        :root { --primary: #0e58a6; --primary-hover: #0b4685; --bg-color: #f4f7f6; --border: #ccc; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-color); color: #333; display: flex; flex-direction: column; min-height: 100vh; }
-        
-        header { background: var(--primary); color: white; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        footer { background: white; text-align: center; padding: 1rem; border-top: 1px solid var(--border); margin-top: auto; font-size: 0.9rem; }
-        .header-controls { display: flex; gap: 1rem; align-items: center; }
-        .timer { font-size: 1.1rem; font-weight: bold; background: rgba(255, 255, 255, 0.2); padding: 0.4rem 0.8rem; border-radius: 5px; display: none; }
-        
-        .container { max-width: 1200px; margin: 2rem auto; padding: 0 5%; display: none; gap: 1.5rem; width: 100%; align-items: flex-start; }
-        .card { background: white; border-radius: 8px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid var(--border); }
-        
-        button { background: var(--primary); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: 0.2s; }
-        button:hover { background: var(--primary-hover); }
-        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
-        .btn-outline:hover { background: var(--primary); color: white; }
-        .btn-danger { background: #dc3545; width: 100%; margin-top: 2rem;}
-        
-        .form-group { margin-bottom: 1.5rem; position: relative; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: bold; font-size: 0.95rem; }
-        .form-group input { width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 4px; font-size: 1rem; }
-        .input-readonly { background-color: #e9ecef !important; color: #666; cursor: not-allowed; border: 1px solid #ccc; }
-        
-        /* Custom Dropdown Styling */
-        .custom-select-box { padding: 0.8rem; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; background: white; display: flex; justify-content: space-between; align-items: center; }
-        .custom-select-box:after { content: "▼"; font-size: 0.8rem; color: #666; }
-        .dropdown-menu { display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 0 0 4px 4px; z-index: 10; margin-top: -1px; }
-        .dropdown-search { padding: 0.5rem; background: #f8f9fa; border-bottom: 1px solid var(--border); }
-        .dropdown-search input { width: 100%; padding: 0.5rem; border: 1px solid var(--primary); border-radius: 3px; outline: none; }
-        .dropdown-list { max-height: 200px; overflow-y: auto; }
-        .dropdown-item { padding: 0.8rem; cursor: pointer; border-bottom: 1px solid #eee; }
-        .dropdown-item:hover { background: #4a90e2; color: white; }
-        
-        #quiz-screen { flex-direction: column; }
-        @media (min-width: 768px) { #quiz-screen { flex-direction: row; } }
-        .main-content { flex: 3; display: flex; flex-direction: column; gap: 1.5rem; width: 100%; }
-        
-        .option-label { display: flex; align-items: flex-start; padding: 1rem; border: 1px solid var(--border); border-radius: 5px; margin-bottom: 0.8rem; cursor: pointer; transition: 0.2s; }
-        .option-label:hover { background: #f0f6fa; border-color: var(--primary); }
-        .option-label.selected { background: #e6f0f9; border-color: var(--primary); font-weight: 500; }
-        .option-label input { margin-right: 1rem; margin-top: 0.3rem; accent-color: var(--primary); cursor: pointer; }
-        
-        #q-text { font-size: 1.1rem; } .option-label { font-size: 1rem; }
-        
-        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; }
-        .grid-btn { padding: 0.5rem; text-align: center; border: 1px solid var(--border); background: white; border-radius: 4px; cursor: pointer; font-size: 0.9rem; }
-        .grid-btn.answered { background: var(--primary); color: white; border-color: var(--primary); }
-        .grid-btn.active { border: 2px solid #ff9800; font-weight: bold; }
-        
-        #loading { display: none; text-align: center; padding: 3rem; font-weight: bold; color: var(--primary); font-size: 1.2rem; }
-        .score-row { display: flex; justify-content: space-between; padding: 0.8rem 0; border-bottom: 1px solid var(--border); text-align: left;}
-
-        /* --- TAMBAHAN CSS SNBT --- */
-        /* Kelas khusus untuk bacaan panjang */
-        .bacaan-panjang p {
-            text-align: justify;
-            text-indent: 30px;
-            margin-bottom: 15px;
-            line-height: 1.6;
+        :root { 
+            --primary: #0e58a6; 
+            --primary-dark: #0b4685; 
+            --secondary: #64748b; 
+            --bg: #f8fafc; 
+            --card: #ffffff; 
+            --text: #334155; 
+            --success: #10b981; 
+            --danger: #ef4444;
+            --border: #e2e8f0;
+            --radius: 12px;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
         }
 
-        /* Header Info Dinamis */
-        .exam-info-header { background: #e9ecef; color: #333; padding: 10px 5%; display: none; justify-content: space-between; font-weight: bold; border-bottom: 2px solid var(--border); font-size: 0.95rem; }
+        body { font-family: 'Inter', 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; height: 100vh; display: flex; flex-direction: column; -webkit-user-select: none; user-select: none; }
         
-        /* Modifikasi Tombol Menu di Header */
-        .btn-menu { background: white; color: var(--primary); border: none; padding: 0.4rem 0.8rem; font-size: 0.9rem; font-weight: bold; border-radius: 4px; display: none; cursor: pointer; }
+        /* SNBT Reading Text Style */
+        .bacaan-panjang p { text-align: justify; text-indent: 30px; margin-bottom: 15px; line-height: 1.7; }
+
+        /* --- Layout Screens --- */
+        #loginScreen, #loadingScreen, #resultScreen { position: fixed; inset: 0; z-index: 999; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--bg) 0%, var(--border) 100%); }
+        #ujianScreen { display: none; flex-direction: column; height: 100%; }
         
-        /* Panel Navigasi Drawer (Tersembunyi di Kanan) */
-        .nav-drawer { position: fixed; top: 0; right: -320px; width: 320px; height: 100vh; background-color: #f4f7f6; box-shadow: -4px 0 15px rgba(0,0,0,0.2); transition: right 0.3s ease-in-out; z-index: 2000; display: flex; flex-direction: column; }
-        .nav-drawer.aktif { right: 0; }
-        .nav-header { background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .nav-header h3 { margin: 0; font-size: 1.1rem; }
-        .btn-close-nav { background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .nav-body { padding: 15px; overflow-y: auto; flex-grow: 1; }
-        .nav-footer { padding: 15px; background: white; border-top: 1px solid var(--border); }
+        /* --- Login Box --- */
+        .login-box { background: var(--card); width: 90%; max-width: 450px; padding: 2.5rem 2rem; border-radius: 1.5rem; box-shadow: var(--shadow-lg); border: 1px solid var(--border); }
+        .login-header { text-align: center; margin-bottom: 2rem; }
+        .login-header h2 { margin: 0; color: var(--primary); font-weight: 800; font-size: 1.5rem; }
+        
+        /* Custom Dropdown (from old script adapted to new UI) */
+        .form-group { margin-bottom: 1.2rem; position: relative; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; color: var(--secondary); }
+        .custom-select-box { padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px; cursor: pointer; background: #f8fafc; display: flex; justify-content: space-between; align-items: center; font-size: 0.95rem; }
+        .custom-select-box:after { content: "▼"; font-size: 0.8rem; color: var(--secondary); }
+        .dropdown-menu { display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid var(--border); box-shadow: var(--shadow-lg); border-radius: 10px; z-index: 10; margin-top: 5px; overflow: hidden; }
+        .dropdown-search { padding: 10px; background: #f8f9fa; border-bottom: 1px solid var(--border); }
+        .dropdown-search input { width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 6px; outline: none; box-sizing: border-box; }
+        .dropdown-list { max-height: 200px; overflow-y: auto; }
+        .dropdown-item { padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #eee; font-size: 0.95rem; }
+        .dropdown-item:hover { background: #e7f1ff; color: var(--primary); font-weight: 500; }
+        .form-control-readonly { width: 100%; padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px; box-sizing: border-box; font-size: 0.95rem; background: #e9ecef; color: #666; cursor: not-allowed; }
+        
+        .btn-block { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 1rem; transition: all 0.2s ease; margin-top: 10px; }
+        .btn-block:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: var(--shadow); }
+
+        /* --- Exam Area --- */
+        .top-bar { background: var(--card); padding: 12px 25px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 100; box-shadow: var(--shadow-sm); }
+        .user-info { font-size: 0.95rem; font-weight: 600; color: var(--text); display: flex; gap: 15px; }
+        .info-badge { background: #e7f1ff; color: var(--primary); padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; }
+        
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 20px; padding: 20px; position: relative; }
+        
+        /* Panels */
+        .soal-panel { flex: 3; background: var(--card); border-radius: var(--radius); padding: 30px; overflow-y: auto; display: flex; flex-direction: column; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .nav-panel { flex: 1; background: var(--card); border-radius: var(--radius); padding: 25px; overflow-y: auto; max-width: 320px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        
+        .nomor-soal { display: flex; justify-content: space-between; border-bottom: 2px solid var(--bg); padding-bottom: 15px; margin-bottom: 20px; font-weight: 700; color: var(--primary); }
+        .teks-soal { font-size: 1.05rem; line-height: 1.7; margin-bottom: 25px; color: var(--text); }
+        
+        /* Options */
+        .opsi-group { display: flex; flex-direction: column; gap: 12px; }
+        .opsi-item { display: flex; align-items: flex-start; padding: 14px 18px; border: 2px solid var(--border); border-radius: 10px; cursor: pointer; transition: all 0.2s ease; background: var(--card); }
+        .opsi-item:hover { background: var(--bg); border-color: #cbd5e1; }
+        .opsi-item:has(input:checked) { border-color: var(--primary); background: #e7f1ff; }
+        .opsi-item input { margin-right: 15px; margin-top: 4px; transform: scale(1.3); accent-color: var(--primary); cursor: pointer;}
+        .opsi-content { flex: 1; overflow-x: auto; line-height: 1.5; font-size: 1rem; }
+        
+        /* Nav Grid */
+        .nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .nav-btn { aspect-ratio: 1; border: 2px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 600; font-size: 0.95rem; color: var(--secondary); background: var(--card); transition: 0.2s; }
+        .nav-btn:hover { border-color: var(--secondary); color: var(--text); }
+        .nav-btn.active { border-color: var(--primary); background: #e7f1ff; color: var(--primary); box-shadow: 0 0 0 2px rgba(14, 88, 166, 0.2); }
+        .nav-btn.filled { background: var(--primary); color: white; border-color: var(--primary-dark); }
+        
+        .timer-display { background: #fffbeb; color: #b45309; padding: 15px; text-align: center; border-radius: 10px; font-size: 1.5rem; font-weight: 800; margin-bottom: 20px; border: 1px solid #fde68a; box-shadow: var(--shadow-sm); letter-spacing: 1px; }
+        
+        /* Footers */
+        .footer-controls { margin-top: auto; display: flex; justify-content: space-between; padding-top: 30px; }
+        .btn-nav { padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; color: white; font-weight: 700; font-size: 0.95rem; transition: 0.2s; box-shadow: var(--shadow-sm); }
+        .btn-prev { background: var(--secondary); }
+        .btn-prev:hover { background: #475569; }
+        .btn-next { background: var(--primary); }
+        .btn-next:hover { background: var(--primary-dark); }
+        .btn-submit { background: var(--success); display: none; }
+        
+        /* Mobile Responsiveness */
+        @media(max-width: 768px) {
+            .main-area { flex-direction: column; padding: 12px; gap: 15px; }
+            .nav-panel { display: none; }
+            .mobile-header-panel { display: flex; flex-direction: column; gap: 10px; background: var(--card); padding: 15px; border-radius: var(--radius); border: 1px solid var(--border); position: sticky; top: 0; z-index: 95; box-shadow: var(--shadow); }
+            .mobile-top-row { display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
+            .m-timer { color: #b45309; background: #fffbeb; padding: 8px 12px; border-radius: 8px; border: 1px solid #fde68a; }
+            .mobile-nav-trigger-btn { background: var(--bg); color: var(--text); border: 2px solid var(--border); width: 100%; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+            .soal-panel { padding: 20px 15px; }
+            .user-info { flex-direction: column; gap: 5px; }
+        }
+        @media(min-width: 769px) { .mobile-header-panel { display: none; } }
+
+        /* Modals */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 2000; align-items: center; justify-content: center; }
+        .modal-content { background: var(--card); width: 90%; max-width: 380px; padding: 25px; border-radius: 1.2rem; max-height: 85vh; overflow-y: auto; position: relative; box-shadow: var(--shadow-lg); }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; cursor: pointer; color: var(--secondary); }
     </style>
 </head>
 <body>
-    <header>
-        <div style="font-size: 1.2rem; font-weight: bold; text-align: center;">CBT SNBT 2026</div>
-        <div class="header-controls">
-            <div id="timer" class="timer">60:00</div>
-            <button id="btn-toggle-nav" class="btn-menu" onclick="toggleNavigasi()">🔢 Daftar Soal</button>
-        </div>
-    </header>
 
-    <!-- Header Info Dinamis (Muncul Saat Ujian) -->
-    <div id="exam-info" class="exam-info-header">
-        <div>👤 <span id="info-nama">Peserta</span></div>
-        <div>📚 <span id="info-subtes">Memuat Subtes...</span></div>
+    <!-- Loading Screen -->
+    <div id="loadingScreen">
+        <div style="text-align: center; color: var(--primary); font-weight: bold; font-size: 1.2rem;">
+            <i class="fas fa-spinner fa-spin fa-2x mb-3"></i><br><br>Memuat Sistem...
+        </div>
     </div>
 
-    <div id="login-screen" class="container" style="display: flex; max-width: 600px;">
-        <div class="card" style="width: 100%;">
-            <h2 style="margin-bottom: 1.5rem; color: var(--primary); text-align: center;">Data Peserta Tryout SNBT</h2>
+    <!-- Login Screen -->
+    <div id="loginScreen" style="display: none;">
+        <div class="login-box">
+            <div class="login-header">
+                <h2>CBT SNBT 2026</h2>
+                <p style="margin:5px 0 0; color:var(--secondary); font-size: 0.9rem;">Dua Dimensi Yogyakarta</p>
+            </div>
             <form id="biodata-form">
-                
                 <div class="form-group">
-                    <label>Nama Lengkap</label>
+                    <label>Nama Lengkap Peserta</label>
                     <div class="custom-select-box" id="select-box" onclick="toggleDropdown()">Pilih Nama Lengkap Anda</div>
                     <input type="hidden" id="nama"> 
                     
                     <div class="dropdown-menu" id="dropdown-menu">
                         <div class="dropdown-search">
-                            <input type="text" id="search-nama" placeholder="Ketik nama untuk mencari..." onkeyup="filterNama()">
+                            <input type="text" id="search-nama" placeholder="Cari nama..." onkeyup="filterNama()">
                         </div>
                         <div class="dropdown-list" id="dropdown-list"></div>
                     </div>
                 </div>
                 
-                <div class="form-group"><label>Asal Sekolah</label><input type="text" id="sekolah" class="input-readonly" readonly required></div>
-                <div class="form-group"><label>Kelas</label><input type="text" id="kelas" class="input-readonly" readonly required></div>
+                <div class="form-group">
+                    <label>Asal Sekolah</label>
+                    <input type="text" id="sekolah" class="form-control-readonly" readonly required>
+                </div>
+                <div class="form-group">
+                    <label>Kelas</label>
+                    <input type="text" id="kelas" class="form-control-readonly" readonly required>
+                </div>
                 
                 <input type="hidden" id="wa">
                 
-                <button type="submit" style="width: 100%; margin-top: 1rem;">Mulai Mengerjakan</button>
+                <button type="submit" class="btn-block">MULAI UJIAN <i class="fas fa-arrow-right"></i></button>
             </form>
         </div>
     </div>
 
-    <div id="loading">Memuat sistem... Mohon tunggu...</div>
-
-    <div id="quiz-screen" class="container">
-        <div class="main-content">
-            <div class="card">
-                <div style="color: var(--primary); font-weight:bold; margin-bottom:0.5rem; text-transform: uppercase; letter-spacing: 1px;" id="q-category"></div>
-                <h2 style="margin-bottom: 1rem;">Soal No. <span id="q-number">1</span></h2>
-                <div id="q-text" style="line-height: 1.6; margin-bottom: 1.5rem;"></div>
-                <div id="options-container"></div>
+    <!-- Ujian Screen -->
+    <div id="ujianScreen">
+        <div class="top-bar">
+            <div class="user-info">
+                <span>👤 <span id="infoNama">Peserta</span></span>
+                <span class="info-badge" id="infoSubtes">📚 Memuat Subtes...</span>
             </div>
-            <div style="display: flex; justify-content: space-between; margin-top: 1rem;">
-                <button id="btn-prev" class="btn-outline" onclick="changeQ(-1)">&#8592; Sebelumnya</button>
-                <button id="btn-next" onclick="changeQ(1)">Selanjutnya &#8594;</button>
+            <button onclick="confirmFinish()" style="background:var(--danger); color:white; border:none; padding:8px 15px; border-radius:8px; font-weight:bold; cursor:pointer;">Akhiri Ujian</button>
+        </div>
+        
+        <div class="main-area">
+            <!-- Mobile Header Panel -->
+            <div class="mobile-header-panel">
+                <div class="mobile-top-row">
+                    <div id="timerMobile" class="m-timer"><i class="fas fa-clock"></i> 60:00</div>
+                </div>
+                <button class="mobile-nav-trigger-btn" onclick="toggleNavModal()"><i class="fas fa-th"></i> Daftar Soal</button>
             </div>
-        </div>
-    </div>
 
-    <!-- Panel Navigasi Drawer Tersembunyi -->
-    <div id="panelNavigasi" class="nav-drawer">
-        <div class="nav-header">
-            <h3>Navigasi Soal</h3>
-            <button class="btn-close-nav" onclick="toggleNavigasi()">Tutup ❌</button>
-        </div>
-        <div class="nav-body">
-            <div class="grid" id="nav-grid"></div>
-        </div>
-        <div class="nav-footer">
-            <button class="btn-danger" onclick="submitQuiz()">Akhiri Ujian</button>
-        </div>
-    </div>
-
-    <div id="result-screen" class="container" style="max-width: 500px; text-align: center; display: none;">
-        <div class="card" style="width: 100%;">
-            <h2>Ujian Selesai!</h2>
-            <p style="color: #666; margin-top: 0.5rem;">Jawaban Anda telah berhasil direkam oleh sistem.</p>
-            <div style="display: flex; justify-content: center; gap: 3rem; margin: 2rem 0; padding-bottom: 1.5rem; border-bottom: 1px dashed var(--border);">
-                <div>
-                    <p style="font-size: 0.9rem; color: #666; font-weight: bold;">STATUS</p>
-                    <h1 style="font-size: 2rem; color: var(--primary);">SUKSES</h1>
+            <!-- Panel Soal (Kiri) -->
+            <div class="soal-panel">
+                <div id="soalContainer"></div>
+                <div class="footer-controls">
+                    <button class="btn-nav btn-prev" onclick="changeQ(-1)" id="btnPrev">Sebelumnya</button>
+                    <button class="btn-nav btn-next" onclick="changeQ(1)" id="btnNext">Selanjutnya</button>
+                    <button class="btn-nav btn-submit" onclick="confirmFinish()" id="btnFinish">Kirim Jawaban</button>
                 </div>
             </div>
-            <button onclick="location.reload()" style="width: 100%;">Kembali ke Awal</button>
+
+            <!-- Panel Navigasi (Kanan - Desktop) -->
+            <div class="nav-panel">
+                <div class="timer-display" id="timerDesktop">60:00</div>
+                <div style="font-size:0.9rem; margin-bottom:15px; font-weight:bold; color:var(--secondary);">Navigasi Soal</div>
+                <div class="nav-grid" id="navGridDesktop"></div>
+            </div>
         </div>
     </div>
 
-    <footer>&copy; 2026 Dua Dimensi Yogyakarta. All rights reserved.</footer>
+    <!-- Modal Navigasi Mobile -->
+    <div class="modal-overlay" id="mobileNavModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="toggleNavModal()">×</span>
+            <div style="text-align:center; font-weight:bold; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">Daftar Soal</div>
+            <div class="nav-grid" id="navGridMobile"></div>
+        </div>
+    </div>
 
+    <!-- Result Screen -->
+    <div id="resultScreen" style="display: none;">
+        <div class="login-box" style="text-align: center;">
+            <div style="font-size:4rem; color:var(--success); margin-bottom:10px;"><i class="fas fa-check-circle"></i></div>
+            <h2 style="color:var(--text); margin:0;">Ujian Selesai!</h2>
+            <p style="color:var(--secondary); margin-top:10px;">Data jawaban Anda telah berhasil direkam oleh sistem.</p>
+            <button onclick="location.reload()" class="btn-block" style="margin-top:20px;">Kembali ke Awal</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // GANTI DENGAN URL DEPLOY CODE.GS SNBT ANDA YANG BARU
+        // GANTI DENGAN URL DEPLOY CODE.GS ANDA (Tetap pakai script GET/POST yang lama)
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz5nk1UvdBotR7WDsmWqHpioKOTxuVPddgneKjGTreUp4lhHLCk46QFu4KMFvCyUsn2/exec'; 
         
         let questions = [];
@@ -188,9 +232,6 @@
         let isExamActive = false; 
 
         document.addEventListener("DOMContentLoaded", async () => {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('loading').style.display = 'block';
-
             try {
                 const response = await fetch(SCRIPT_URL);
                 if (!response.ok) throw new Error('Gagal mengambil data');
@@ -211,14 +252,15 @@
                     dropdownList.appendChild(div);
                 });
 
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('login-screen').style.display = 'flex';
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('loginScreen').style.display = 'flex';
                 
             } catch (err) {
                 alert("Terjadi kesalahan koneksi. Pastikan URL GAS benar.");
             }
         });
 
+        // --- Dropdown Logic ---
         function toggleDropdown() {
             const menu = document.getElementById('dropdown-menu');
             menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
@@ -228,14 +270,9 @@
         function filterNama() {
             let filter = document.getElementById('search-nama').value.toUpperCase();
             let items = document.querySelectorAll('.dropdown-item');
-            
             items.forEach(item => {
                 let txtValue = item.textContent || item.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    item.style.display = "";
-                } else {
-                    item.style.display = "none";
-                }
+                item.style.display = (txtValue.toUpperCase().indexOf(filter) > -1) ? "" : "none";
             });
         }
 
@@ -258,17 +295,17 @@
             }
         }
 
-        // Fungsi Buka/Tutup Navigasi Drawer
-        function toggleNavigasi() {
-            document.getElementById('panelNavigasi').classList.toggle('aktif');
+        function toggleNavModal() { 
+            const modal = document.getElementById('mobileNavModal'); 
+            modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex'; 
         }
 
+        // --- Mulai Ujian ---
         document.getElementById('biodata-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            
             const inputNama = document.getElementById('nama').value;
             if (!inputNama) {
-                alert("Silakan klik dan pilih nama Anda dari daftar terlebih dahulu.");
+                Swal.fire('Perhatian', 'Silakan klik dan pilih nama Anda dari daftar terlebih dahulu.', 'warning');
                 return;
             }
 
@@ -279,95 +316,118 @@
                 nomorWA: document.getElementById('wa').value
             };
             
-            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('infoNama').innerText = biodata.nama;
             
             const memoriTersimpan = localStorage.getItem('jawaban_cbt_snbt');
             if (memoriTersimpan) answers = JSON.parse(memoriTersimpan);
             
-            document.getElementById('quiz-screen').style.display = 'flex';
-            document.getElementById('timer').style.display = 'block';
-            document.getElementById('btn-toggle-nav').style.display = 'block';
-            
-            // Munculkan Header Info Dinamis
-            document.getElementById('exam-info').style.display = 'flex';
-            document.getElementById('info-nama').innerText = biodata.nama;
-            
+            document.getElementById('ujianScreen').style.display = 'flex';
             isExamActive = true; 
             
-            buildGrid();
+            buildNavGrid();
             showQuestion(0);
             
             timerInt = setInterval(() => {
                 timeRem--;
                 let m = Math.floor(timeRem / 60).toString().padStart(2, '0');
                 let s = (timeRem % 60).toString().padStart(2, '0');
-                document.getElementById('timer').innerText = `${m}:${s}`;
+                document.getElementById('timerDesktop').innerText = `${m}:${s}`;
+                document.getElementById('timerMobile').innerHTML = `<i class="fas fa-clock"></i> ${m}:${s}`;
                 if(timeRem <= 0) {
-                    alert("Waktu pengerjaan telah habis!");
-                    submitQuiz(true);
+                    clearInterval(timerInt);
+                    Swal.fire('Waktu Habis!', 'Sistem akan otomatis mengirim jawaban Anda.', 'warning').then(() => submitQuiz(true));
                 }
             }, 1000);
         });
 
-        function buildGrid() {
-            const grid = document.getElementById('nav-grid');
-            grid.innerHTML = '';
-            questions.forEach((q, i) => {
-                const btn = document.createElement('div');
-                btn.className = 'grid-btn';
-                if (answers[q.id]) btn.classList.add('answered'); 
-                btn.innerText = q.id;
-                btn.id = 'grid-' + i;
-                btn.onclick = () => {
-                    showQuestion(i);
-                    toggleNavigasi(); // Otomatis tutup drawer setelah klik nomor
-                };
-                grid.appendChild(btn);
-            });
-        }
-
+        // --- Render Soal (Dengan Logika Tipe Soal UI Baru) ---
         function showQuestion(index) {
             currentIndex = index;
             const q = questions[index];
-            document.getElementById('q-category').innerText = q.category || "SNBT";
-            document.getElementById('q-number').innerText = q.id;
-            document.getElementById('q-text').innerHTML = q.text; 
+            const div = document.getElementById('soalContainer');
             
-            // Update tulisan subtes di header setiap pindah soal
-            document.getElementById('info-subtes').innerText = q.subtes || "Tes Berlangsung";
+            // Update Header Subtes (Asumsi q.subtes ada, jika pakai Code.gs lama pakai q.category)
+            document.getElementById('infoSubtes').innerText = `📚 ${q.subtes || q.category || "Tes Berlangsung"}`;
             
-            const optCont = document.getElementById('options-container');
-            optCont.innerHTML = '';
-            
-            for(let [key, val] of Object.entries(q.options)) {
-                if(!val) continue; 
-                const isSel = answers[q.id] === key;
-                optCont.innerHTML += `
-                    <label class="option-label ${isSel ? 'selected' : ''}">
-                        <input type="radio" name="opt" value="${key}" ${isSel ? 'checked' : ''} onchange="saveAnswer(${q.id}, '${key}')">
-                        <span><strong>${key}.</strong> ${val}</span>
-                    </label>
-                `;
-            }
-            
-            document.getElementById('btn-prev').style.visibility = index === 0 ? 'hidden' : 'visible';
-            const btnNext = document.getElementById('btn-next');
-            if(index === questions.length - 1) {
-                btnNext.innerText = 'Selesai';
-                btnNext.onclick = () => submitQuiz();
+            // Identifikasi Tipe Soal (Asumsi q.tipe. Jika undefined, anggap PG biasa)
+            const tipeSoal = q.tipe ? q.tipe.toUpperCase() : 'PG';
+
+            let h = `<div class="nomor-soal"><span>Soal No. ${q.id}</span></div><div class="teks-soal">${q.text}</div>`;
+
+            if (tipeSoal === 'MCMA') {
+                // Tipe Kotak Centang
+                const curr = answers[q.id] || []; 
+                h += `<div class="opsi-group">`;
+                for(let [key, val] of Object.entries(q.options)) {
+                    if(!val) continue;
+                    const chk = curr.includes(key) ? 'checked' : '';
+                    h += `<label class="opsi-item"><input type="checkbox" ${chk} onchange="saveMcma('${q.id}','${key}')"> <div style="display:flex; width:100%;"><b style="margin-right:10px; margin-top:2px;">${key}.</b> <div class="opsi-content">${val}</div></div></label>`;
+                }
+                h += `</div>`;
+
+            } else if (tipeSoal === 'BS' || tipeSoal === 'BENAR SALAH') {
+                // Tipe Benar-Salah
+                const curr = answers[q.id] || {}; 
+                h += `<div class="opsi-group">`;
+                for(let [key, val] of Object.entries(q.options)) {
+                    if(!val) continue;
+                    const valAns = curr[key] || '';
+                    const stB = valAns==='Benar'?'background:var(--primary);color:white;border-color:var(--primary-dark)':'background:white;color:var(--text)'; 
+                    const stS = valAns==='Salah'?'background:var(--danger);color:white;border-color:darkred':'background:white;color:var(--text)';
+                    
+                    h += `<div style="display:flex; justify-content:space-between; padding:15px; border:2px solid var(--border); border-radius:10px; align-items:center; background:var(--card);">
+                            <div class="opsi-content"><b>${key}.</b> ${val}</div>
+                            <div style="min-width: 130px; text-align:right; display:flex; gap:5px; justify-content:flex-end;">
+                                <button style="border:1px solid var(--border); border-radius:6px; padding:6px 12px; font-weight:bold; cursor:pointer; ${stB}" onclick="saveBs('${q.id}','${key}','Benar')">B</button> 
+                                <button style="border:1px solid var(--border); border-radius:6px; padding:6px 12px; font-weight:bold; cursor:pointer; ${stS}" onclick="saveBs('${q.id}','${key}','Salah')">S</button>
+                            </div>
+                          </div>`;
+                }
+                h += `</div>`;
+
             } else {
-                btnNext.innerText = 'Selanjutnya \u2192';
-                btnNext.onclick = () => changeQ(1);
+                // Tipe Pilihan Ganda Standar (PG)
+                h += `<div class="opsi-group">`;
+                for(let [key, val] of Object.entries(q.options)) {
+                    if(!val) continue; 
+                    const isSel = answers[q.id] === key;
+                    h += `<label class="opsi-item"><input type="radio" name="opt" value="${key}" ${isSel ? 'checked' : ''} onchange="saveAnswer('${q.id}', '${key}')"> <div style="display:flex; width:100%;"><b style="margin-right:10px; margin-top:2px;">${key}.</b> <div class="opsi-content">${val}</div></div></label>`;
+                }
+                h += `</div>`;
             }
+
+            div.innerHTML = h;
             
-            document.querySelectorAll('.grid-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('grid-'+index).classList.add('active');
+            document.getElementById('btnPrev').disabled = (index === 0);
+            document.getElementById('btnNext').style.display = (index === questions.length - 1) ? 'none' : 'block';
+            document.getElementById('btnFinish').style.display = (index === questions.length - 1) ? 'block' : 'none';
+            
+            updateNavActive();
         }
 
+        // --- Logika Penyimpanan Jawaban ---
         function saveAnswer(id, key) {
             answers[id] = key;
             localStorage.setItem('jawaban_cbt_snbt', JSON.stringify(answers)); 
-            document.getElementById('grid-'+currentIndex).classList.add('answered');
+            buildNavGrid();
+            showQuestion(currentIndex); 
+        }
+
+        function saveMcma(id, key) { 
+            let a = answers[id] || []; 
+            if(a.includes(key)) a = a.filter(x => x !== key); else a.push(key); 
+            answers[id] = a; 
+            localStorage.setItem('jawaban_cbt_snbt', JSON.stringify(answers)); 
+            buildNavGrid();
+        }
+
+        function saveBs(id, key, val) { 
+            let o = answers[id] || {}; 
+            o[key] = val; 
+            answers[id] = o; 
+            localStorage.setItem('jawaban_cbt_snbt', JSON.stringify(answers)); 
+            buildNavGrid();
             showQuestion(currentIndex); 
         }
 
@@ -376,18 +436,66 @@
             if(newIndex >= 0 && newIndex < questions.length) showQuestion(newIndex);
         }
 
+        // --- Navigasi Grid ---
+        function buildNavGrid() {
+            const gridD = document.getElementById('navGridDesktop');
+            const gridM = document.getElementById('navGridMobile');
+            gridD.innerHTML = ''; gridM.innerHTML = '';
+            
+            questions.forEach((q, i) => {
+                // Mengecek apakah soal sudah dijawab
+                let isAnswered = false;
+                if (answers[q.id]) {
+                    if (Array.isArray(answers[q.id])) { isAnswered = answers[q.id].length > 0; } // Untuk MCMA
+                    else if (typeof answers[q.id] === 'object') { isAnswered = Object.keys(answers[q.id]).length > 0; } // Untuk BS
+                    else { isAnswered = true; } // Untuk PG
+                }
+
+                const createBtn = () => {
+                    const btn = document.createElement('div');
+                    btn.className = 'nav-btn';
+                    if (isAnswered) btn.classList.add('filled'); 
+                    if (i === currentIndex) btn.classList.add('active');
+                    btn.innerText = q.id;
+                    return btn;
+                };
+
+                const btnD = createBtn();
+                btnD.onclick = () => showQuestion(i);
+                gridD.appendChild(btnD);
+
+                const btnM = createBtn();
+                btnM.onclick = () => { showQuestion(i); toggleNavModal(); };
+                gridM.appendChild(btnM);
+            });
+        }
+
+        function updateNavActive() {
+            document.querySelectorAll('.nav-btn').forEach(b => {
+                b.classList.remove('active');
+                if(b.innerText == questions[currentIndex].id) b.classList.add('active');
+            });
+        }
+
+        // --- Submit Logic (Dikembalikan ke Skrip Asli TKA SMP) ---
+        function confirmFinish() {
+            Swal.fire({
+                title: 'Kirim Jawaban',
+                text: 'Pastikan semua soal telah terjawab. Apakah Anda yakin ingin mengakhiri ujian?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Kirim Sekarang',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#10b981'
+            }).then((result) => { 
+                if (result.isConfirmed) submitQuiz(); 
+            });
+        }
+
         async function submitQuiz(force = false) {
-            if(!force && !confirm("Apakah Anda yakin ingin mengumpulkan jawaban sekarang?")) return;
-            
             clearInterval(timerInt);
-            document.getElementById('quiz-screen').style.display = 'none';
-            document.getElementById('timer').style.display = 'none';
-            document.getElementById('btn-toggle-nav').style.display = 'none';
-            document.getElementById('exam-info').style.display = 'none'; // Sembunyikan header info
-            document.getElementById('panelNavigasi').classList.remove('aktif'); // Tutup drawer
-            
-            document.getElementById('loading').innerText = 'Menyimpan jawaban (Mohon tunggu)...';
-            document.getElementById('loading').style.display = 'block';
+            document.getElementById('ujianScreen').style.display = 'none';
+            document.getElementById('loadingScreen').style.display = 'flex';
 
             const payload = { token: "CBT_DUA_DIMENSI_2026", biodata, answers };
             
@@ -401,25 +509,21 @@
                     
                     const result = await response.json();
                     
-                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('loadingScreen').style.display = 'none';
                     if (result.status === 'success') {
                         localStorage.removeItem('jawaban_cbt_snbt');
                         isExamActive = false; 
-                        
-                        document.getElementById('result-screen').style.display = 'flex';
-                        // Anda bisa menyesuaikan tampilan skor SNBT nanti di sini
+                        document.getElementById('resultScreen').style.display = 'flex';
                     } else {
-                        alert("Pesan Sistem: " + result.message);
-                        document.getElementById('quiz-screen').style.display = 'flex';
-                        document.getElementById('btn-toggle-nav').style.display = 'block';
+                        Swal.fire('Gagal!', result.message, 'error');
+                        document.getElementById('ujianScreen').style.display = 'flex';
                     }
                 } catch (err) {
-                    alert("Koneksi terputus. Silakan klik tombol 'Akhiri Ujian' sekali lagi.");
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('quiz-screen').style.display = 'flex';
-                    document.getElementById('btn-toggle-nav').style.display = 'block';
+                    Swal.fire('Koneksi Terputus', 'Silakan klik tombol Kirim Jawaban sekali lagi.', 'error');
+                    document.getElementById('loadingScreen').style.display = 'none';
+                    document.getElementById('ujianScreen').style.display = 'flex';
                 }
-            }, Math.floor(Math.random() * 3000));
+            }, 2000);
         }
 
         window.addEventListener('beforeunload', function (e) {
