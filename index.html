@@ -533,7 +533,7 @@ function confirmFinish(forced = false) {
 }
 
 async function submitQuiz(forced = false) {
-    if (isSubmitting) return; 
+    if (isSubmitting) return; // Kunci gembok
     isSubmitting = true; 
     
     clearInterval(timerInt);
@@ -569,15 +569,17 @@ async function submitQuiz(forced = false) {
                 Swal.fire('Gagal!', result.message, 'error'); 
             }
         } catch (err) { 
-            retries--; // Kurangi jatah percobaan
+            retries--;
             if (retries === 0) {
                 isSubmitting = false; 
                 Swal.fire('Koneksi Terputus', 'Sistem gagal menjangkau server. Silakan klik Kirim Jawaban sekali lagi.', 'error'); 
             } else {
-                // Sistem akan menunggu 2 detik dalam diam, lalu mencoba mengirim ulang otomatis
+                // Tunggu 2 detik sebelum mencoba kirim ulang
                 await new Promise(res => setTimeout(res, 2000));
             }
         }
+    }
+}
 
 window.addEventListener('beforeunload', function (e) { if (isExamActive) { e.preventDefault(); e.returnValue = ''; } });
 </script>
