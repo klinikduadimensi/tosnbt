@@ -533,7 +533,7 @@ function confirmFinish(forced = false) {
 }
 
 async function submitQuiz(forced = false) {
-    if (isSubmitting) return; // Kunci gembok
+    if (isSubmitting) return; 
     isSubmitting = true; 
     
     clearInterval(timerInt);
@@ -541,33 +541,43 @@ async function submitQuiz(forced = false) {
 
     const payload = { token: "CBT_DUA_DIMENSI_2026", biodata, answers };
     
-    try {
-        const response = await fetch(SCRIPT_URL, { 
-            method: 'POST', 
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
-            body: JSON.stringify(payload) 
-        });
-        
-        const result = await response.json();
-        
-        if (result.status === 'success') {
-            localStorage.removeItem('jawaban_cbt_snbt'); 
-            isExamActive = false; 
-            Swal.close();
+    let retries = 3;
+    let success = false;
+    
+    while (retries > 0 && !success) {
+        try {
+            const response = await fetch(SCRIPT_URL, { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+                body: JSON.stringify(payload) 
+            });
             
-            document.getElementById('ujianScreen').style.display = 'none';
-            document.getElementById('resultScreen').style.display = 'flex';
+            const result = await response.json();
+            success = true; // Berhasil merespon JSON
             
-            if (document.fullscreenElement) document.exitFullscreen().catch(e=>console.log(e));
-        } else { 
-            isSubmitting = false; // Buka gembok jika server menolak
-            Swal.fire('Gagal!', result.message, 'error'); 
+            if (result.status === 'success') {
+                localStorage.removeItem('jawaban_cbt_snbt'); 
+                isExamActive = false; 
+                Swal.close();
+                
+                document.getElementById('ujianScreen').style.display = 'none';
+                document.getElementById('resultScreen').style.display = 'flex';
+                
+                if (document.fullscreenElement) document.exitFullscreen().catch(e=>console.log(e));
+            } else { 
+                isSubmitting = false; 
+                Swal.fire('Gagal!', result.message, 'error'); 
+            }
+        } catch (err) { 
+            retries--; // Kurangi jatah percobaan
+            if (retries === 0) {
+                isSubmitting = false; 
+                Swal.fire('Koneksi Terputus', 'Sistem gagal menjangkau server. Silakan klik Kirim Jawaban sekali lagi.', 'error'); 
+            } else {
+                // Sistem akan menunggu 2 detik dalam diam, lalu mencoba mengirim ulang otomatis
+                await new Promise(res => setTimeout(res, 2000));
+            }
         }
-    } catch (err) { 
-        isSubmitting = false; // Buka gembok jika jaringan putus
-        Swal.fire('Koneksi Terputus', 'Sistem gagal menjangkau server. Silakan klik Kirim Jawaban sekali lagi.', 'error'); 
-    }
-}
 
 window.addEventListener('beforeunload', function (e) { if (isExamActive) { e.preventDefault(); e.returnValue = ''; } });
 </script>
